@@ -8,37 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// app.post("/chat", async (req, res) => {
-//   try {
-//     const response = await axios.post(
-//       "https://openrouter.ai/api/v1/chat/completions",
-//       {
-//         model: "openai/gpt-3.5-turbo",
-//         messages: [
-//           { role: "user", content: req.body.message }
-//         ],
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-//           "Content-Type": "application/json",
-//           "HTTP-Referer": "http://localhost:3000",
-//           "X-Title": "AI Study App"
-//         },
-//       }
-//     );
-
-//     res.json({
-//       reply: response.data.choices[0].message.content
-//     });
-
-//   } catch (error) {
-//     console.error("🔥 FULL ERROR:", error.response?.data || error.message);
-//     res.status(500).json({ reply: "AI Error ❌" });
-//   }
-// });
-
-let messages = [];
+let messages = [
+  { role: "system", content: "You are a helpful AI study assistant." }
+];
 
 app.post("/chat", async (req, res) => {
   try {
@@ -54,7 +26,7 @@ app.post("/chat", async (req, res) => {
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000",
+          "HTTP-Referer": "https://scintillating-gumption-78e5ee.netlify.app",
           "X-Title": "AI Study App",
         },
       }
@@ -72,6 +44,8 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000 🚀");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} 🚀`);
 });
