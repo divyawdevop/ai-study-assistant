@@ -80,67 +80,50 @@ const handleImageSelect = (e) => {
 
 const sendMessage = async () => {
   if ((!input.trim() && !image) || !activeChat) return;
+
   const userMessage = {
-  sender: "user",
-  text: input,
-  image: image || null,
-  time: new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  }),
-};
+    sender: "user",
+    text: input,
+    image: image || null,
+    time: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
+
   const updatedChats = chats.map(chat => {
     if (chat.id === activeChatId) {
-  return {
-    ...chat,
-    title:
-      chat.messages.length === 0
-      ? input.length > 20
-      ? input.slice(0, 20) + "..."
-      : input
-      : chat.title,
-    messages: [...chat.messages, userMessage],
-  };
-}
+      return {
+        ...chat,
+        title:
+          chat.messages.length === 0
+            ? input.length > 20
+              ? input.slice(0, 20) + "..."
+              : input
+            : chat.title,
+        messages: [...chat.messages, userMessage],
+      };
+    }
     return chat;
   });
+
   setChats(updatedChats);
   setInput("");
   setImage(null);
   if (fileInputRef.current) fileInputRef.current.value = "";
   setLoading(true);
 
-  // try {
-  //   const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ message: input }),
-  //   });
   try {
-  const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ message: input }),
-  });
+    const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: input }),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (!res.ok) {
-    throw new Error(data.error || "Server error");
-  }
-
-  // rest same...
-
-  } catch (err) {
-    console.error("ERROR:", err);
-    alert("Backend not responding ❌");
-  }  
-    
-  const data = await res.json();
     const botMessage = {
       sender: "bot",
       text: data.reply,
@@ -149,6 +132,7 @@ const sendMessage = async () => {
         minute: "2-digit",
       }),
     };
+
     setChats(prev =>
       prev.map(chat =>
         chat.id === activeChatId
@@ -156,12 +140,15 @@ const sendMessage = async () => {
           : chat
       )
     );
-  } catch {
-    setLoading(false);
+
+  } catch (err) {
+    console.error("ERROR:", err);
+    alert("Backend not responding ❌");
   }
+
   setLoading(false);
 };
-  
+
 useEffect(() => {
   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 }, [chats, loading]);
