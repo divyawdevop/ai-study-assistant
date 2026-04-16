@@ -110,15 +110,37 @@ const sendMessage = async () => {
   if (fileInputRef.current) fileInputRef.current.value = "";
   setLoading(true);
 
+  // try {
+  //   const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ message: input }),
+  //   });
   try {
-    const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: input }),
-    });
-    const data = await res.json();
+  const res = await fetch("https://ai-study-assistant-w7xd.onrender.com/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message: input }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Server error");
+  }
+
+  // rest same...
+
+  } catch (err) {
+    console.error("ERROR:", err);
+    alert("Backend not responding ❌");
+  }  
+    
+  const data = await res.json();
     const botMessage = {
       sender: "bot",
       text: data.reply,
@@ -165,7 +187,7 @@ useEffect(() => {
 
 
 return (
-    <>h
+    <>
   <div className={`sidebar ${showSidebar ? "show" : "hide"}`}>
     <button className="nbtn"onClick={createNewChat}>+ New Chat</button>
       {chats.map(chat => (
