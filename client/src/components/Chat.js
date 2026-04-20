@@ -174,7 +174,7 @@ useEffect(() => {
 
 
 return (
-    <>
+    <>hi
   <div className={`sidebar ${showSidebar ? "show" : "hide"}`}>
     <button className="nbtn"onClick={createNewChat}>+ New Chat</button>
       {chats.map(chat => (
